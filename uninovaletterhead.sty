@@ -94,7 +94,7 @@
 
 % commands
 \newcommand*{\unvresearchgroup}[3][]{%
-    \def\theDepartment{#2}\def\@unvdepartmentpt{#2}\def\@unvdepartmenten{#3}\def\@unvhookdepartment{#1}}
+    \def\theResearchGroup{#2}\def\@unvdepartmentpt{#2}\def\@unvdepartmenten{#3}\def\@unvhookdepartment{#1}}
 \newcommand*{\unvphone}[2][]{\def\@unvphone{#2}\def\@unvhookphone{#1}}
 \newcommand*{\unvext}[2][]{\def\@unvext{#2}\def\@unvhookext{#1}}
 \newcommand*{\unvemail}[2][]{\def\@unvemail{#2}\def\@unvhookemail{#1}}
@@ -183,7 +183,8 @@
     \StrGobbleRight{\@unvauthorposition}{1}[\@unvauthorposition]%
     \@for\myi:=\@unvauthorposition\do{%
       \StrCut{\myi}{,}\@unv@author\@unv@position%
-      \@unvoneauthor[#1]{\@unv@author}{\@unv@position}
+      \StrSubstitute{\@unv@position}{;}{\\}[\@unv@position]%
+      \@unvoneauthor[#1]{\@unv@author}{\begin{tabular}{c}\@unv@position\end{tabular}}
     }%
   \end{minipage}\par\bigskip%
 }
