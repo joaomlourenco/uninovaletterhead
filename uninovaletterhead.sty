@@ -1,0 +1,201 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% uninovaletterhead.sty
+%% A package for producing FCT-NOVA lettherhead paper
+%%
+%% This work is licensed under the
+%% The LaTeX project public license (LPPL), version 1.3c
+%% To view a copy of this license, visit
+%% https://www.latex-project.org/lppl/lppl-1-3c/
+%%
+\def\uninovaletterheadname    {uninovaletterhead}
+\def\uninovaversion           {1.1.1}
+%%
+\def\uninovadate              {2024-12-28}
+%%
+%% Departamento de Informática (www.di.unv.unl.pt)
+%% Faculdade de Ciências e Tecnologia (www.unv.unl.pt)
+%% Universidade NOVA de Lisboa (www.unl.pt)
+%%
+%% BUGS and SUGGESTIONS: please submit an issue at the project web page
+%%      at: https://github.com/joaomlourenco/uninovaletterhead/
+%%
+%% HELP: please DO NOT SEND ME EMAILS about LaTeX or this template
+%%       please ask for help at GitHub Discussions page at
+%%          https://github.com/joaomlourenco/uninovaletterhead/discussions
+%%
+%%
+%% AUTHOR @github:
+%%     - joaomlourenco
+%%
+%%
+%% DONATIONS:
+%%     If you think this package is usefult to you, pease make a small
+%%     donation to my alterego NOVAthesis at
+%%          https://www.paypal.com/donate/?hosted_button_id=8WA8FRVMB78W8
+%%     and let me know in the comments box that it is for the “uninovaletterhead”
+%%     package.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{uninovaletterhead}[\uninovadate\space v\uninovaversion\space, Joao Lourenco, Letterhead paper for NOVA FCT]
+
+\newif\ifunveverypage
+\DeclareOption{everypage}{\unveverypagetrue}
+\newif\ifunvblue
+\DeclareOption{blue}{\unvbluetrue}
+\newif\ifunvopensans
+\DeclareOption{opensans}{\unvopensanstrue}
+\DeclareOption*{\PackageWarning{letterheadunv}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax
+
+\newcommand*{\@unvsep}{2.4cm}
+
+\RequirePackage{iflang}
+
+\ifunvopensans
+  \IfPackageLoadedTF{opensans}{}{\RequirePackage[default,oldstyle,scale=0.95]{opensans}}
+\fi
+\IfPackageLoadedTF{xcolor}{}{\RequirePackage[svgnames]{xcolor}}
+\definecolor{unvblue}{RGB}{76,106,175}
+\definecolor{unvgreen}{RGB}{119,187,67}
+
+\ifunvblue
+  \RequirePackage{titlesec} 
+  \titleformat{\section}
+    {\color{unvblue}\normalfont\Large\bfseries}
+    {\color{unvblue}\thesection}{1em}{}
+  \AddToHook{cmd/abstractname/before}{\color{unvblue}}
+  % \AddToHook{cmd/@title/before}{\color{unvblue}}
+\fi
+\IfPackageLoadedTF{graphicx}{}{\RequirePackage{graphicx}}
+\IfPackageLoadedTF{tikz}{}{\RequirePackage{tikz}}
+\IfPackageLoadedTF{hyperref}{}{\RequirePackage[colorlinks]{hyperref}}
+\IfPackageLoadedTF{xstring}{}{\RequirePackage{xstring}}
+\IfPackageLoadedTF{etoolbox}{}{\RequirePackage{etoolbox}}
+\IfPackageLoadedTF{geometry}{}{\RequirePackage{geometry}}
+\geometry{hmargin=3cm,vmargin={3cm,2cm},footskip=1.2cm}
+
+
+% defaults to empty department
+\def\@unvdepartmentpt{}
+\def\@unvdepartmenten{}
+% defaults to main phone number
+\def\@unvphone{+351 212 948 300}
+
+% empty hooks by default
+\def\@unvhookdepartment{}
+\def\@unvhookphone{}
+\def\@unvhookext{}
+\def\@unvhookemail{}
+\def\@unvhookurl{}
+\def\@unvhookauthor{}
+\def\@unvhooktitle{}
+
+% commands
+\newcommand*{\unvresearchgroup}[3][]{%
+    \def\theDepartment{#2}\def\@unvdepartmentpt{#2}\def\@unvdepartmenten{#3}\def\@unvhookdepartment{#1}}
+\newcommand*{\unvphone}[2][]{\def\@unvphone{#2}\def\@unvhookphone{#1}}
+\newcommand*{\unvext}[2][]{\def\@unvext{#2}\def\@unvhookext{#1}}
+\newcommand*{\unvemail}[2][]{\def\@unvemail{#2}\def\@unvhookemail{#1}}
+\newcommand*{\unvurl}[2][]{\def\@unvurl{#2}\def\@unvhookurl{#1}}
+% \newcounter{nAuthors}
+\newcommand*{\unvauthor}[2][]{\def\@unvhookauthor{#1}\unvauthorposition{#2}}
+\newcommand{\unvauthorposition}[1]{%
+  \StrCut{#1}{,}\@unv@author\@unv@position%
+  \xappto\theAuthor{\@unv@author,}%
+  \xappto\@unvauthorposition{{#1},}%
+}
+\newcommand*{\unvtitle}[2][]{\gdef\theTitle{#2}\def\@unvhooktitle{#1}}
+\def\@unvauthorsigfont{}
+\newcommand*{\unvauthorsigfont}[1]{\def\@unvauthorsigfont{#1}}
+\def\@unvpositionsigfont{\scriptsize}
+\newcommand*{\unvpositionsigfont}[1]{\def\@unvpositionsigfont{#1}}
+
+% hook for every page
+\AddToHook {shipout/background}{%
+  \ifunveverypage% print logo in all pages
+    \letterhead
+  \else% print logo only in fisrt page
+    \ifnum\value{page}=1\relax
+      \letterhead
+    \fi
+  \fi
+}%
+
+
+\newcommand*{\letterhead}{%
+  \IfLanguageName{english}{\newcommand{\unvlogo}{uninova_logo-EN}}
+                          {\newcommand{\unvlogo}{uninova_logo-PT}}%
+  \newcommand{\unvfooter}{uninova_footer}
+  \begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,yshift=-0.85cm,xshift=\@unvsep]%
+      at (current page.north west)
+      {\includegraphics[height=1.6cm]{\unvlogo}};
+  \node[anchor=south,yshift=0.5cm]%
+      at (current page.south)
+     {\includegraphics[width=\paperwidth]{\unvfooter}};
+  \node[anchor=north east,yshift=-1.3cm,xshift=-\@unvsep]%
+      at (current page.north east)
+      {\sffamily\bfseries\footnotesize\@unvhookdepartment\begin{minipage}{10cm}\raggedleft~\MakeUppercase{\@unvdepartmentpt}\\[2mm]
+        \color{gray}~\MakeUppercase{\@unvdepartmenten}\end{minipage}};
+ \end{tikzpicture}
+ }
+
+\newdimen\@authposht
+\newcommand*{\@unvoneauthor}[3][]{%
+% #1 = rule length
+% #2 = author name
+% #3 = author position
+  \ifx&#1&%
+    % #1 is empty
+    \setbox0\hbox{\qquad\@unvauthorsigfont#2\qquad}%
+    \setbox1\hbox{\qquad\@unvpositionsigfont#3\qquad}%
+    \ifdim\wd0>\wd1%
+      \def\@unvwd{\wd0}%
+    \else
+      \def\@unvwd{\wd1}%
+    \fi
+  \else%
+    % #1 is nonempty
+    \def\@unvwd{#1}
+  \fi%
+  \qquad%
+  \begin{minipage}[t]{\@unvwd}%
+    \centering%
+    \rule{\@unvwd}{0.5pt}%
+    \\[0.5ex]\@unvhookauthor{\@unvauthorsigfont#2}%
+    \\[0.5ex]{\@unvpositionsigfont#3}%
+  \end{minipage}%
+}
+
+
+\newcommand*{\unvsignature}[3][]{
+  % #1 = rule length
+  % #2 = alignment
+  % #3 = vertical spacing
+  \vspace*{#3}%
+  \noindent\begin{minipage}{\linewidth}%
+    \baselineskip=\dimexpr#3+#3\relax%
+    \if#2l\relax\raggedright\fi%
+    \if#2c\relax\centering\fi%
+    \if#2r\relax\raggedleft\fi%
+    \StrGobbleRight{\@unvauthorposition}{1}[\@unvauthorposition]%
+    \@for\myi:=\@unvauthorposition\do{%
+      \StrCut{\myi}{,}\@unv@author\@unv@position%
+      \@unvoneauthor[#1]{\@unv@author}{\@unv@position}
+    }%
+  \end{minipage}\par\bigskip%
+}
+
+\def\@oddfoot{\normalfont\footnotesize\color{unvblue}\hfill\thepage}%
+\def\@evenfoot{\normalfont\footnotesize\color{unvblue}\hfill\thepage}%
+\def\ps@plain{%
+  \def\@oddfoot{\normalfont\footnotesize\color{unvblue}\hfill\thepage}%
+  \def\@evenfoot{\normalfont\footnotesize\color{unvblue}\hfill\thepage}%
+}
+
+\@ifundefined{Ginput@path}
+  {\def\Ginput@path{{./},{unv-logos/}}}
+  {\g@addto@macro{Ginput@path}{,{./},{unv-logos/}}}
+  

@@ -1,0 +1,157 @@
+% !TEX TS-program = pdflatex
+%
+% Created by João Lourenço on 2024-12-27.
+% Copyright (c) by João Lourenço 2022
+\documentclass[a4paper,11pt]{article}
+
+
+%-------------------------------------------------------------
+% Configuração do pacote "uninovaletterhead"
+%-------------------------------------------------------------
+% \usepackage{uninovaletterhead}  % defaults: times new roman font, black headings
+% \usepackage[everypage,opensans,blue]{uninovaletterhead}  % With blue section headings
+\usepackage[everypage,opensans]{uninovaletterhead}
+
+\unvresearchgroup{Grupo de Investigação}{Research Group}
+\unvphone{+351 218 724 500}
+
+
+
+
+%-------------------------------------------------------------
+% Resto do docuemnto LaTeX
+%-------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage{calligra}
+\usepackage{courier}
+\usepackage[portuguese]{babel}
+\usepackage{xltabular}
+\usepackage[colorlinks]{hyperref}
+\hypersetup{allcolors=unvblue}
+% \geometry{hmargin=2.0cm,vmargin=2.5cm}
+
+\newcommand*{\thePackage}{\texttt{\uninovaletterheadname}}
+
+\unvtitle{O pacote \LaTeX\ \thePackage}
+\unvauthor{João M. Lourenço, Professor Associado @ NOVA FCT}
+% \unvauthor{John Doe, Investigador Principal}      % descomentar para ver múltiplas assinaturas
+% \unvauthor{Alice Doe, Biolseiro}                  % descomentar para ver múltiplas assinaturas
+\unvauthorsigfont{\LARGE\color{unvblue}\calligra}
+\unvpositionsigfont{\scriptsize}
+
+\title{\theTitle}
+\author{\theAuthor}
+\date{\uninovadate\ \ (v.\ \uninovaversion)}
+
+\hypersetup{
+  pdftitle   = {\theTitle},
+  pdfsubject = {\theDepartment $|$ UNINOVA},
+  pdfauthor  = {\theAuthor}
+}
+
+
+% The document
+\begin{document}
+
+\maketitle
+
+% \thispagestyle{empty}% Não imprimir número de página na primeira página
+
+\begin{abstract}
+    Este documento é simultaneamente um manual de instruções e um exemplo de como usar o pacote “\thePackage”.  Este pacote permite produzir documentos em \emph{papel timbrado} do \href{www.uninova.pt}{UNINOVA (Instituto de Desenvolvimento de Novas Tecnologias)}.
+\end{abstract}
+
+
+\section{Preâmbulo}
+
+A versão mais recente deste pacote está disponível para download em:
+
+\begin{center}
+  \url{github.com/joaomlourenco/uninovaletterhead}
+\end{center}
+
+Se não tem a certeza se está a utilizar a versão mais recente, aproveite e \href{github.com/joaomlourenco/uninovaletterhead/archive/refs/heads/main.zip}{faça download} da última versão!   Já agora, se achar este pacote útil, \href{www.paypal.com/donate/?hosted_button_id=8WA8FRVMB78W8}{ofereça um café} ao meu alter-ego \emph{NOVAthesis} e na caixa de comentários diga que é para o pacote \thePackage! ;)
+
+
+\section{Usar o pacote \thePackage}
+
+Este pacote \thePackage é simples de usar.  Basta adicionar no preâmbulo do ficheiro fonte, i.e., depois do \verb!\docuemntclass{…}! e antes do \verb!\begin{document}!, o seguinte comando:
+
+\begin{verbatim}
+  \usepackage[opções]{uninovaletterhead}
+\end{verbatim}
+
+\noindent onde, por omissão, apenas a primeira página será timbrada.
+As opções válidas são:\vspace{-1.5ex}
+
+\bgroup
+  \renewcommand{\arraystretch}{1.5}
+  \begin{xltabular}{\textwidth}{lX}
+    \texttt{everypage}  & Todas as páginas serão timbradas e não apenas a primeira.\\
+    \texttt{opensans}   & Utilizar a fonte \emph{OpenSans}.\\
+  \end{xltabular}
+\egroup
+
+\section{Configurar o pacote \thePackage}
+
+Ainda no preâmbulo, deverá configurar o seu docuemnto com os seguintes comandos:
+
+\bgroup
+  \renewcommand{\arraystretch}{1.5}
+  \begin{xltabular}{\textwidth}{lX}
+    \verb+\unvresearchgroup+    & Este comando recebe dois argumentos, o primeiro com o nome do grupo de investigação em Português e o segundo com o nome do grupo de investigação em Inglês.  Estes nomes são convertidos para maiúsculas e apresentados no canto superior direito.  \textbf{\textsl{Se omitido nada será apresentado no canto superior direito.}}\\
+    \verb+\unvtitle+            & Este comando recebe como argumento o título do documento.\\
+    \verb+\unvauthor+           & Este comando recebe como argumento o nome do autor e, opcionalmente, o seu título/posição, a colocar na zona de assinatura.  \textbf{\textsl{Se omitido nada será apresentado.  Se usado múltiplas vezes, serão criadas múltiplas zonas de assinatura, uma para cada um dos autores.}}\\
+    \verb+\unvauthorsigfont+    &  Configurar a fonte para escrever o(s) nome(s) do(s) autor(es).\\
+    \verb+\unvpositionsigfont+  &  Configurar a fonte para escrever a(s) posições(s) do(s) autor(es).\\
+  \end{xltabular}
+\egroup
+
+\section{Configurar e Apresentar a Zona de Assinatura}
+
+Há também um comando para criar uma zona para colocar uma assinatura.  Este comando tem três argumentos, sendo que o primeiro (entre “[…]”) é opcional.
+
+\begin{verbatim}
+  \unvsignature[tamanho_da_linha]{posição}{afastamento}
+\end{verbatim}
+
+\noindent onde:
+
+\medskip
+\bgroup
+  \renewcommand{\arraystretch}{1.5}
+  \begin{xltabular}{\textwidth}{lX}
+    \texttt{tamanho\_da\_linha}  & \emph{Opcional} — Indicação do tamanho da linha (em qualquer unidade válida no \LaTeX, por exemplo, \emph{6cm}, \emph{2in}, \emph{30pt}, etc).  \textbf{\textsl{Se omitido desenha uma linha ligeiramente mais larga que o nome/posição.}}\\
+    \texttt{posição} & \emph{Obrigatório} — Indicação da localização da zona de assinatura.  Valores possíveis:\newline
+    \begin{tabular}[t]{>{\slshape\bfseries}ll}
+      l & zona de assinatura à esquerda;\\
+      c & zona de assinatura centrada; e\\
+      r & zona de assinatura à direita.\\
+    \end{tabular}\\
+    \texttt{afastamento}  & \emph{Obrigatório} — Indicação do espaço a deixar entre o final do texto e a zona de assinatura (em qualquer unidade válida no \LaTeX, por exemplo, \emph{3cm}, \emph{2.5in}, \emph{10ex}, etc).\\
+  \end{xltabular}
+\egroup
+
+A zona de assinatura que termina este documento, localizada em baixo à direita, foi criada com:
+
+\begin{verbatim}
+  \unvauthor{João M. Lourenço, Professor Associado @ NOVA FCT}
+  \unvauthorsigfont{\LARGE\calligra}
+  \unvpositionsigfont{\scriptsize}
+  ...
+  \unvsignature{r}{1.5cm}
+\end{verbatim}
+
+\section{Um comentário final}
+
+Este trabalho está licenciado ao abrigo da
+Licença pública do projeto LaTeX (LPPL), versão 1.3c.
+Para ver uma cópia desta licença, visite
+\url{https://www.latex-project.org/lppl/lppl-1-3c/}
+
+
+
+\unvsignature{r}{1.5cm}
+
+\end{document}
+
